@@ -2,20 +2,22 @@
 const picklejs = require('picklejs');
 
 class Track{
-  constructor (unString, anAlbum, artist1, ...artistN){
+  constructor (unString, anAlbum, anArtist, genere1, ...genereN){
     this.genres=unString;
     this.album=anAlbum;
-    this.artist= new Array();
-    this.artist.push(artist1, ...artistN);
+    this.artist= new Array(Artist);
+    this.artist.push(anArtist);
+    this.generes= new Array(String);
+    this.generes.push(genere1, ...genereN);
   }
 
 }
 
 class Album{
-  constructor (anArtist, {aName, aYear}){
+  constructor (anArtist, aName, aYear){
     this.artistsOfAlbum= new Array(Artist);
     this.artistsOfAlbum.push(anArtist);
-    this.aName=aName;
+    this.name=aName;
     this.year=aYear;
 
   }
@@ -36,8 +38,20 @@ class UNQfy {
   }
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-
+    const cumplenGeneros= new Array(String);
+    for (let index = 0; index < genres.length; index++) {
+      const element = genres[index];
+      for (let index = 0; index < this.tracks.length; index++) {
+        const element2 = this.tracks[index];
+        if (element2.generes.includes(element)){
+          cumplenGeneros.push(element2);
+        }
+      }
+    }
+    return cumplenGeneros;
   }
+        
+          
 
   getTracksMatchingArtist(artistName) {
     const listaResultante=[];
@@ -66,13 +80,9 @@ class UNQfy {
   }
 
 
-  /* Debe soportar al menos:
-      params.name (string)
-      params.year (number)
-  */
   addAlbum(artistName, albumName, albumYear) {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
-    this.albums().push(new Album(artistName, albumName, albumYear));
+    this.albums.push(new Album(artistName, albumName, albumYear));
   }
 
 
@@ -81,12 +91,13 @@ class UNQfy {
        params.duration (number)
        params.genres (lista de strings)
   */
-  addTrack(albumName, params) {
+  addTrack(albumName, trackName, trackDuraction, trackGenres) {
     /* El objeto track creado debe soportar (al menos) las propiedades:
          name (string),
          duration (number),
          genres (lista de strings)
     */
+    this.tracks.push(new Track (albumName, trackName, trackDuraction, trackGenres));
   }
 
   getArtistByName(name) {
@@ -99,11 +110,29 @@ class UNQfy {
   }
 
   getAlbumByName(name) {
+    for (let index = 0; index < this.albums.length; index++) {
+      const element = this.albums[index];
+      if(this.esElAlbum(name, element)){
+        return(element);
+      }
+    }
+  }
 
+  esElAlbum(aString, anAlbum){
+    return(aString===anAlbum.name);
   }
 
   getTrackByName(name) {
+    for (let index = 0; index < this.tracks.length; index++) {
+      const element = this.tracks[index];
+      if(this.esElTrack(name, element)){
+        return element;
+      }
+    }
+  }
 
+  esElTrack(aString, aTrack){
+    return (aString===aTrack.name);
   }
 
   getPlaylistByName(name) {
