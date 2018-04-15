@@ -37,13 +37,13 @@ class UNQfy {
   }
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-    const cumplenGeneros= new Array(String);
+    const cumplenGeneros= [];
     for (let index = 0; index < genres.length; index++) {
-      const element = genres[index];
+      const genero = genres[index];
       for (let index = 0; index < this.tracks.length; index++) {
-        const element2 = this.tracks[index];
-        if (element2.generes.includes(element)){
-          cumplenGeneros.push(element2);
+        const cancion = this.tracks[index];
+        if (cancion.genres.includes(genero)&&!(cumplenGeneros.includes(cancion))){
+          cumplenGeneros.push(cancion);
         }
       }
     }
@@ -163,6 +163,9 @@ const s= new UNQfy();
 s.addArtist('Avril Lavigne', 'USA');
 s.addAlbum('Avril Lavigne', 'Best damn thing', 2005);
 s.addTrack('Best damn thing', "When you're gone", 300, ['Pop', 'Balada']);
+s.addTrack('Best damn thing', "Girlfriend", 300, ['Pop', 'Rock']);
+s.addTrack('Best damn thing', "Innocent", 300, ['Pop', 'Balada']);
+s.addTrack('Best damn thing', "Best damn thing", 300, ['Diva']);
 
 const artist = s.getArtistByName('Avril Lavigne');
 console.log(artist.name);
@@ -170,9 +173,16 @@ console.log(artist.name);
 const track= s.getTrackByName("When you're gone");
 console.log(track.name);
 
-console.log(track.genres.includes('Pop'));
+const s2= new UNQfy();
+s2.addTrack('Appetite for Destruction', 'Welcome to the jungle', 200, ['rock', 'hard rock', 'movie']);
+s2.addTrack('Appetite for Destruction', "Sweet Child o' Mine", 500, ['rock', 'hard rock', 'pop', 'movie']);
+s2.addTrack('Thriller', 'Trhiller', 200, ['pop', 'movie']);
+s2.addTrack('Thriller', 'Another song', 500, ['classic']);
+s2.addTrack('Thriller', 'Another song II', 500, ['movie']);
 
-for (let index = 0; index < track.genres.length; index++) {
-  const element = track.genres[index];
+const tracksMatching = s2.getTracksMatchingGenres(['pop', 'movie']);
+
+for (let index = 0; index < tracksMatching.length; index++) {
+  const element = tracksMatching[index];
   console.log(element);
 }
