@@ -5,13 +5,13 @@ const libunqfy = require('./unqfy');
 
 
 function createAndAddArtist(unqfy, artistName, country) {
-  unqfy.addArtist({ name: artistName, country });
+  unqfy.addArtist(artistName, country);
   const artist = unqfy.getArtistByName(artistName);
   return artist;
 }
 
 function createAndAddAlbum(unqfy, artistName, albumName, albumYear) {
-  unqfy.addAlbum(artistName, { name: albumName, year: albumYear });
+  unqfy.addAlbum(artistName, albumName, albumYear );
   return unqfy.getAlbumByName(albumName);
 }
 

@@ -12,11 +12,17 @@ class Track{
 }
 
 class Album{
+  constructor (anArtist, {aName, aYear}){
+    this.artistsOfAlbum= new Array(Artist);
+    this.artistsOfAlbum.push(anArtist);
+    this.aName=aName;
+    this.year=aYear;
 
+  }
 }
 
 class Artist{
-  constructor(aString, aCountry){
+  constructor (aString, aCountry){
     this.name=aString;
     this.country=aCountry;
   }
@@ -25,7 +31,8 @@ class Artist{
 class UNQfy {
   constructor(){
     this.tracks= new Array();
-    this.artists= new Array();
+    this.artists= new Array(Artist);
+    this.albums= new Array(Album);
   }
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
@@ -53,10 +60,9 @@ class UNQfy {
      params.name (string)
      params.country (string)
   */
-  addArtist(aName, aCountry) {
+  addArtist(aString, aCountry) {
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
-    const artistaNuevo= new Artist(aName, aCountry);
-    this.artists.push(artistaNuevo);
+    this.artists.push(new Artist(aString, aCountry));
   }
 
 
@@ -64,8 +70,9 @@ class UNQfy {
       params.name (string)
       params.year (number)
   */
-  addAlbum(artistName, params) {
+  addAlbum(artistName, albumName, albumYear) {
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
+    this.albums().push(new Album(artistName, albumName, albumYear));
   }
 
 
@@ -132,4 +139,6 @@ module.exports = {
 
 const s= new UNQfy();
 s.addArtist('guns and Rose', 'GUNS');
-console.log(s.getArtistByName('guns and Rose'));
+
+const artist = s.getArtistByName('guns and Rose');
+console.log(artist.name);
