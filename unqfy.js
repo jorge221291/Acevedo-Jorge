@@ -2,13 +2,12 @@
 const picklejs = require('picklejs');
 
 class Track{
-  constructor (unString, anAlbum, anArtist, genere1, ...genereN){
-    this.genres=unString;
+  constructor (anAlbum, unString, anInt, genresN){
+    this.name=unString;
     this.album=anAlbum;
-    this.artist= new Array(Artist);
-    this.artist.push(anArtist);
-    this.generes= new Array(String);
-    this.generes.push(genere1, ...genereN);
+    this.genres= new Array(String);
+    this.genres=genresN;
+    this.duration=anInt;
   }
 
 }
@@ -85,12 +84,6 @@ class UNQfy {
     this.albums.push(new Album(artistName, albumName, albumYear));
   }
 
-
-  /* Debe soportar (al menos):
-       params.name (string)
-       params.duration (number)
-       params.genres (lista de strings)
-  */
   addTrack(albumName, trackName, trackDuraction, trackGenres) {
     /* El objeto track creado debe soportar (al menos) las propiedades:
          name (string),
@@ -167,7 +160,19 @@ module.exports = {
 };
 
 const s= new UNQfy();
-s.addArtist('guns and Rose', 'GUNS');
+s.addArtist('Avril Lavigne', 'USA');
+s.addAlbum('Avril Lavigne', 'Best damn thing', 2005);
+s.addTrack('Best damn thing', "When you're gone", 300, ['Pop', 'Balada']);
 
-const artist = s.getArtistByName('guns and Rose');
+const artist = s.getArtistByName('Avril Lavigne');
 console.log(artist.name);
+
+const track= s.getTrackByName("When you're gone");
+console.log(track.name);
+
+console.log(track.genres.includes('Pop'));
+
+for (let index = 0; index < track.genres.length; index++) {
+  const element = track.genres[index];
+  console.log(element);
+}
