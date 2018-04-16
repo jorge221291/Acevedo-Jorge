@@ -1,7 +1,7 @@
 
 const picklejs = require('picklejs');
 
-class Track{
+class Track{                                    // Clase Track
   constructor (anAlbum, unString, anInt, genresN){
     this.name=unString;
     this.album=anAlbum;
@@ -12,29 +12,49 @@ class Track{
 
 }
 
-class Album{
+class Album{                                    // Clase Album
   constructor (anArtist, aName, aYear){
-    this.artistsOfAlbum= new Array(Artist);
-    this.artistsOfAlbum.push(anArtist);
+    this.artistsOfAlbum= anArtist;
     this.name=aName;
     this.year=aYear;
 
   }
 }
 
-class Artist{
+class Artist{                                   // Clase Artist
   constructor (aString, aCountry){
     this.name=aString;
     this.country=aCountry;
   }
 }
 
-class UNQfy {
+class UNQfy {                                   // Clase UNQfy
   constructor(){
     this.tracks= new Array();
     this.artists= new Array(Artist);
     this.albums= new Array(Album);
   }
+
+  addArtist(aString, aCountry) {              // Agrega un artista a la lista de artistas del sistema
+    // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
+    const artistaNuevo= new Artist(aString, aCountry);
+    this.artists.push(artistaNuevo);
+  }
+
+  addAlbum(artistName, albumName, albumYear) {  // Agrega un album a la lista de albums del sistema, en caso de que el artista dueño del album no exista tambien lo cre
+    // El objeto album creado debe tener (al menos) las propiedades name (string) y year
+    this.albums.push(new Album(artistName, albumName, albumYear));
+  }
+
+  addTrack(albumName, trackName, trackDuraction, trackGenres) { //  Agrega una cancion a la lista de canciones del sistema
+    /* El objeto track creado debe soportar (al menos) las propiedades:
+         name (string),
+         duration (number),
+         genres (lista de strings)
+    */
+    this.tracks.push(new Track (albumName, trackName, trackDuraction, trackGenres));
+  }
+
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
     const cumplenGeneros= [];
@@ -48,54 +68,35 @@ class UNQfy {
       }
     }
     return cumplenGeneros;
-  }
-        
-          
+  }      
 
   getTracksMatchingArtist(artistName) {
-    const listaResultante=[];
-    this.tracks.forEach(element => { if (this.estaElArtista(element.artist, artistName)){
-      listaResultante.push(element);
-    }})
-    return (listaResultante);
-  }
-
-  estaElArtista(artistList, anArtist){
-    let estaEnLaLista=false;
-    artistList.forEach(element => { if (element===anArtist){
-      estaEnLaLista= true;}})
-    return estaEnLaLista;
-  }
-      
-
-
-  /* Debe soportar al menos:
-     params.name (string)
-     params.country (string)
-  */
-  addArtist(aString, aCountry) {
-    // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
-    this.artists.push(new Artist(aString, aCountry));
-  }
-
-
-  addAlbum(artistName, albumName, albumYear) {
-    // El objeto album creado debe tener (al menos) las propiedades name (string) y year
-    this.albums.push(new Album(artistName, albumName, albumYear));
-  }
-
-  addTrack(albumName, trackName, trackDuraction, trackGenres) {
-    /* El objeto track creado debe soportar (al menos) las propiedades:
-         name (string),
-         duration (number),
-         genres (lista de strings)
-    */
-    this.tracks.push(new Track (albumName, trackName, trackDuraction, trackGenres));
+    const listaDeAlbumes=this.albums;
+    const listaDeCanciones=this.tracks;
+    const albumesResultantes=[];
+    const cancionesResultantes=[];
+    for (let index = 0; index < listaDeAlbumes.length; index++) {
+      const album = listaDeAlbumes[index];
+      if(artistName.name===album.artistsOfAlbum){
+        albumesResultantes.push(album);
+      }
+    }
+    for (let index = 0; index < listaDeCanciones.length; index++) {
+      const cancion = listaDeCanciones[index];
+      for (let index = 0; index < albumesResultantes.length; index++) {
+        const element = albumesResultantes[index];
+        if (element.name===cancion.album){
+          cancionesResultantes.push(cancion);
+        }
+      }
+    }
+    return cancionesResultantes;
   }
 
   getArtistByName(name) {
-    for (let index = 0; index < this.artists.length; index++) {
-      const element = this.artists[index];
+    const listaDeArtistas=this.artists;
+    for (let index = 0; index < listaDeArtistas.length; index++) {
+      const element = listaDeArtistas[index];
       if (element.name===name){
         return element;
       }
@@ -106,7 +107,7 @@ class UNQfy {
     for (let index = 0; index < this.albums.length; index++) {
       const element = this.albums[index];
       if(this.esElAlbum(name, element)){
-        return(element);
+        return element;
       }
     }
   }
@@ -159,6 +160,8 @@ module.exports = {
   UNQfy,
 };
 
+
+
 const s= new UNQfy();
 s.addArtist('Avril Lavigne', 'USA');
 s.addAlbum('Avril Lavigne', 'Best damn thing', 2005);
@@ -174,15 +177,28 @@ const track= s.getTrackByName("When you're gone");
 console.log(track.name);
 
 const s2= new UNQfy();
+const a1=s2.addArtist('guns and rose', 'USA');
+s2.addAlbum('guns and rose', 'Appetite for Destruction',1990);
+s2.addAlbum('guns and rose', 'album');
 s2.addTrack('Appetite for Destruction', 'Welcome to the jungle', 200, ['rock', 'hard rock', 'movie']);
 s2.addTrack('Appetite for Destruction', "Sweet Child o' Mine", 500, ['rock', 'hard rock', 'pop', 'movie']);
 s2.addTrack('Thriller', 'Trhiller', 200, ['pop', 'movie']);
 s2.addTrack('Thriller', 'Another song', 500, ['classic']);
 s2.addTrack('Thriller', 'Another song II', 500, ['movie']);
+s2.addTrack('album', 'cancion', 1,['Cumbia']);
 
 const tracksMatching = s2.getTracksMatchingGenres(['pop', 'movie']);
 
 for (let index = 0; index < tracksMatching.length; index++) {
   const element = tracksMatching[index];
   console.log(element);
+}
+
+const busquedaPorArtista= s2.getTracksMatchingArtist(s2.getArtistByName('guns and rose'));
+
+
+
+for (let index = 0; index < busquedaPorArtista.length; index++) {
+  const element1 = busquedaPorArtista[index];
+  console.log(element1); 
 }
