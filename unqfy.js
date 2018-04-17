@@ -28,11 +28,31 @@ class Artist{                                   // Clase Artist
   }
 }
 
+class Playlist{
+  constructor (aString, genresN, time, listaDeTracks){
+    this.name=aString;
+    this.genresTotal=new Array(String);
+    this.genresTotal=genresN;
+    this.totalDuration=time;
+    this.totalTracks=new Array(Track);
+    this.totalTracks=listaDeTracks;
+  }
+
+  duration(){
+    return this.totalDuration;
+  }
+
+  hasTrack(aTrack){
+    return (this.totalTracks.includes(aTrack));
+  }
+}
+
 class UNQfy {                                   // Clase UNQfy
   constructor(){
     this.tracks= new Array();
     this.artists= new Array(Artist);
     this.albums= new Array(Album);
+    this.playlists= new Array(Playlist);
   }
 
   addArtist(aString, aCountry) {              // Agrega un artista a la lista de artistas del sistema
@@ -53,6 +73,15 @@ class UNQfy {                                   // Clase UNQfy
          genres (lista de strings)
     */
     this.tracks.push(new Track (albumName, trackName, trackDuraction, trackGenres));
+  }
+
+  addPlaylist(name, genresToInclude, maxDuration) {
+    /* El objeto playlist creado debe soportar (al menos):
+      * una propiedad name (string)
+      * un metodo duration() que retorne la duración de la playlist.
+      * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist
+    */
+    this.playlists.push(new Playlist(name, genresToInclude, maxDuration, this.tracks));
   }
 
   getTracksMatchingGenres(genres) {
@@ -106,40 +135,32 @@ class UNQfy {                                   // Clase UNQfy
   getAlbumByName(name) {
     for (let index = 0; index < this.albums.length; index++) {
       const element = this.albums[index];
-      if(this.esElAlbum(name, element)){
+      if(this.esLoQueBusco(name, element)){
         return element;
       }
     }
-  }
-
-  esElAlbum(aString, anAlbum){
-    return(aString===anAlbum.name);
   }
 
   getTrackByName(name) {
     for (let index = 0; index < this.tracks.length; index++) {
       const element = this.tracks[index];
-      if(this.esElTrack(name, element)){
+      if(this.esLoQueBusco(name, element)){
         return element;
       }
     }
   }
 
-  esElTrack(aString, aTrack){
-    return (aString===aTrack.name);
-  }
-
   getPlaylistByName(name) {
-
+    for (let index = 0; index < this.playlists.length; index++) {
+      const playlist = this.playlists[index];
+      if(this.esLoQueBusco(name, playlist)){
+        return playlist;
+      }
+    }
   }
 
-  addPlaylist(name, genresToInclude, maxDuration) {
-    /* El objeto playlist creado debe soportar (al menos):
-      * una propiedad name (string)
-      * un metodo duration() que retorne la duración de la playlist.
-      * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist
-    */
-
+  esLoQueBusco(aString, aThing){  //Compara un string con el string(nombre) de un objeto
+    return (aString===aThing.name);
   }
 
   save(filename = 'unqfy.json') {
@@ -157,7 +178,7 @@ class UNQfy {                                   // Clase UNQfy
 
 // TODO: exportar todas las clases que necesiten ser utilizadas desde un modulo cliente
 module.exports = {
-  UNQfy,
+  UNQfy
 };
 
 
