@@ -28,7 +28,7 @@ class Artist{                                   // Clase Artist
   }
 }
 
-class Playlist{
+class Playlist{                                 //Clase Playlist
   constructor (aString, genresN, time, listaDeTracks){
     this.name=aString;
     this.genresTotal=new Array(String);
@@ -55,7 +55,7 @@ class UNQfy {                                   // Clase UNQfy
     this.playlists= new Array(Playlist);
   }
 
-  addArtist(aString, aCountry) {              // Agrega un artista a la lista de artistas del sistema
+  addArtist(aString, aCountry) {              // Agrega un artista a la lista de artistas de la clase UNQfy
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
     const artistaNuevo= new Artist(aString, aCountry);
     this.artists.push(artistaNuevo);
@@ -86,12 +86,12 @@ class UNQfy {                                   // Clase UNQfy
 
   getTracksMatchingGenres(genres) {
     // Debe retornar todos los tracks que contengan alguno de los generos en el parametro genres
-    const cumplenGeneros= [];
-    for (let index = 0; index < genres.length; index++) {
-      const genero = genres[index];
-      for (let index = 0; index < this.tracks.length; index++) {
-        const cancion = this.tracks[index];
-        if (cancion.genres.includes(genero)&&!(cumplenGeneros.includes(cancion))){
+    const cumplenGeneros= [];                                                     //Recorre la lista de generos 
+    for (let index = 0; index < genres.length; index++) {                         //recibida por parametro y le pregunta
+      const genero = genres[index];                                               //a cada Track si su lista de generos
+      for (let index = 0; index < this.tracks.length; index++) {                  //incluye al genero buscado y si no se
+        const cancion = this.tracks[index];                                       //habia pusheado antes (para evitar 
+        if (cancion.genres.includes(genero)&&!(cumplenGeneros.includes(cancion))){//repetidos) se pushea.
           cumplenGeneros.push(cancion);
         }
       }
@@ -99,68 +99,72 @@ class UNQfy {                                   // Clase UNQfy
     return cumplenGeneros;
   }      
 
-  getTracksMatchingArtist(artistName) {
+  getAlbumesDeUnArtista(artist){    //Devuelve una lista de albumes que interpreta un artista
     const listaDeAlbumes=this.albums;
-    const listaDeCanciones=this.tracks;
     const albumesResultantes=[];
-    const cancionesResultantes=[];
     for (let index = 0; index < listaDeAlbumes.length; index++) {
       const album = listaDeAlbumes[index];
-      if(artistName.name===album.artistsOfAlbum){
+      if(artist.name===album.artistsOfAlbum){
         albumesResultantes.push(album);
       }
     }
-    for (let index = 0; index < listaDeCanciones.length; index++) {
-      const cancion = listaDeCanciones[index];
-      for (let index = 0; index < albumesResultantes.length; index++) {
-        const element = albumesResultantes[index];
-        if (element.name===cancion.album){
-          cancionesResultantes.push(cancion);
+    return albumesResultantes;
+  }
+
+  getTracksMatchingArtist(artistName) {   //Le paso un artista y devuelve la lista de canciones asociadas a el
+    const listaDeCanciones=this.tracks;
+    const albumesResultantes=this.getAlbumesDeUnArtista(artistName);          //Albumes que son del artista
+    const cancionesResultantes=[];                                     //Recorro la lista de canciones y los albums que 
+    for (let index = 0; index < listaDeCanciones.length; index++) {    //contienen al artista para poder de esta manera 
+      const cancion = listaDeCanciones[index];                         //preguntar si el nombre del album del artista
+      for (let index = 0; index < albumesResultantes.length; index++) {//es igual a el album que lo contiene.
+        const albumQueContieneAlArtista = albumesResultantes[index];   //Estoy comparando Album.name con Track.album,
+        if (albumQueContieneAlArtista.name===cancion.album){           //entonces si la cancion pertenece al album que 
+          cancionesResultantes.push(cancion);                          //interpreta el artista buscado se pushea.
         }
       }
     }
     return cancionesResultantes;
   }
 
-  getArtistByName(name) {
+  getArtistByName(name) {       //Se le pasa el nombre de un artista y devuelve el objeto Artist asociado a el
     const listaDeArtistas=this.artists;
     for (let index = 0; index < listaDeArtistas.length; index++) {
-      const element = listaDeArtistas[index];
-      if (element.name===name){
-        return element;
+      const artista = listaDeArtistas[index];
+      if (artista.name===name){
+        return artista;
       }
     }
   }
 
-  getAlbumByName(name) {
-    for (let index = 0; index < this.albums.length; index++) {
-      const element = this.albums[index];
-      if(this.esLoQueBusco(name, element)){
-        return element;
+  getAlbumByName(name) {      //Se le pasa el nombre de un album y devuelve el objeto Album asociado
+    const listaDeAlbumes=this.albums;
+    for (let index = 0; index < listaDeAlbumes.length; index++) {
+      const album = listaDeAlbumes[index];
+      if(name===album.name){
+        return album;
       }
     }
   }
 
-  getTrackByName(name) {
-    for (let index = 0; index < this.tracks.length; index++) {
-      const element = this.tracks[index];
-      if(this.esLoQueBusco(name, element)){
-        return element;
+  getTrackByName(name) {        //Se le pasa el nombre de una canción y devuelve el objeto Track que corresponda
+    const listaDeTracks=this.tracks;
+    for (let index = 0; index < listaDeTracks.length; index++) {
+      const cancion = listaDeTracks[index];
+      if(name===cancion.name){
+        return cancion;
       }
     }
   }
 
-  getPlaylistByName(name) {
-    for (let index = 0; index < this.playlists.length; index++) {
-      const playlist = this.playlists[index];
-      if(this.esLoQueBusco(name, playlist)){
+  getPlaylistByName(name) {     //Se le pasa el nombre de una Playlist y devuelve el objeto Playlist asociado
+    const listaDePlaylists=this.playlists;
+    for (let index = 0; index < listaDePlaylists.length; index++) {
+      const playlist = listaDePlaylists[index];
+      if(name===playlist.name){
         return playlist;
       }
     }
-  }
-
-  esLoQueBusco(aString, aThing){  //Compara un string con el string(nombre) de un objeto
-    return (aString===aThing.name);
   }
 
   save(filename = 'unqfy.json') {
@@ -181,7 +185,8 @@ module.exports = {
   UNQfy
 };
 
-
+///////////////////////////////////////Utilizado para detección de errores///////////////////////////////////////////
+/*
 
 const s= new UNQfy();
 s.addArtist('Avril Lavigne', 'USA');
@@ -222,4 +227,4 @@ const busquedaPorArtista= s2.getTracksMatchingArtist(s2.getArtistByName('guns an
 for (let index = 0; index < busquedaPorArtista.length; index++) {
   const element1 = busquedaPorArtista[index];
   console.log(element1); 
-}
+}*/
